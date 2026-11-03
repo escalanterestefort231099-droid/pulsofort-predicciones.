@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PulsoFort v2.0 | Terminal Analítica NBA</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #09090b; color: #f4f4f5; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white">
+
+    <!-- HEADER / TERMINAL NAVBAR -->
+    <header class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="mono font-bold tracking-wider text-lg text-white">PULSOFORT <span class="text-xs px-2 py-0.5 bg-zinc-800 text-zinc-400 rounded border border-zinc-700">v2.0 NBA</span></span>
+            </div>
+            <div class="text-xs mono text-zinc-400 hidden sm:block">
+                ESTADO: <span class="text-emerald-400 font-semibold">CONECTADO A FIREBASE</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 py-8 w-full flex-grow grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- FORMULARIO DE ENTRADA -->
+        <section class="lg:col-span-2 bg-zinc-900/60 border border-zinc-800 rounded-xl p-6 shadow-xl backdrop-blur">
+            <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
+                <span class="text-blue-500 mono">01.</span> Parámetros del Partido & Sistema Restefort v2.0
+            </h2>
+
+            <form id="restefortForm" class="space-y-6">
+                <!-- EQUIPO A vs EQUIPO B -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- EQUIPO A -->
+                    <div class="space-y-4 p-4 bg-zinc-950/50 rounded-lg border border-zinc-800/80">
+                        <h3 class="text-sm font-bold text-blue-400 uppercase mono tracking-wide">Equipo Local (A)</h3>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">PPG Ajustado (A)</label>
+                            <input type="number" step="0.1" id="ppgA" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 mono" value="115.4">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">Pace (Ritmo A)</label>
+                            <input type="number" step="0.1" id="paceA" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 mono" value="99.2">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">NetRTG (A)</label>
+                            <input type="number" step="0.1" id="netRtgA" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 mono" value="4.5">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-400 mb-1">eFG% (A)</label>
+                                <input type="number" step="0.001" id="efgA" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 mono" value="0.545">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-400 mb-1">OREB% (A)</label>
+                                <input type="number" step="0.001" id="orebA" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 mono" value="0.285">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">TOV% (A)</label>
+                            <input type="number" step="0.001" id="tovA" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 mono" value="0.125">
+                        </div>
+                    </div>
+
+                    <!-- EQUIPO B -->
+                    <div class="space-y-4 p-4 bg-zinc-950/50 rounded-lg border border-zinc-800/80">
+                        <h3 class="text-sm font-bold text-amber-400 uppercase mono tracking-wide">Equipo Visitante (B)</h3>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">PPG Ajustado (B)</label>
+                            <input type="number" step="0.1" id="ppgB" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 mono" value="112.1">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">Pace (Ritmo B)</label>
+                            <input type="number" step="0.1" id="paceB" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 mono" value="98.5">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">NetRTG (B)</label>
+                            <input type="number" step="0.1" id="netRtgB" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 mono" value="1.2">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-400 mb-1">eFG% (B)</label>
+                                <input type="number" step="0.001" id="efgB" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 mono" value="0.522">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-zinc-400 mb-1">OREB% (B)</label>
+                                <input type="number" step="0.001" id="orebB" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 mono" value="0.260">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">TOV% (B)</label>
+                            <input type="number" step="0.001" id="tovB" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500 mono" value="0.138">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FACTOR DE ARBITRAJE (FAA) -->
+                <div class="p-4 bg-zinc-950/50 rounded-lg border border-zinc-800/80">
+                    <label class="block text-xs font-medium text-zinc-300 mb-1">Factor de Arbitraje (FAA) <span class="text-zinc-500">[-2.5 a +2.5]</span></label>
+                    <input type="number" step="0.1" min="-2.5" max="2.5" id="faa" required class="w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 mono" value="0.0">
+                </div>
+
+                <!-- BOTÓN DE CÁLCULO -->
+                <button type="button" onclick="calcularRestefort()" class="w-full bg-white hover:bg-zinc-200 text-zinc-950 font-bold py-3 px-4 rounded-lg transition tracking-wide text-sm mono cursor-pointer">
+                    APLICAR FÓRMULA RESTEFORT v2.0
+                </button>
+            </form>
+        </section>
+
+        <!-- PANEL DE RESULTADOS -->
+        <section class="bg-zinc-900/60 border border-zinc-800 rounded-xl p-6 shadow-xl backdrop-blur flex flex-col justify-between">
+            <div>
+                <h2 class="text-base font-semibold text-white mb-4 flex items-center gap-2">
+                    <span class="text-amber-500 mono">02.</span> Resultados Analíticos
+                </h2>
+                
+                <div id="resultsPlaceholder" class="text-sm text-zinc-500 italic py-12 text-center">
+                    Ingrese los parámetros y ejecute el cálculo para proyectar el encuentro.
+                </div>
+
+                <div id="resultsContent" class="space-y-4 hidden">
+                    <div class="p-4 bg-zinc-950 rounded-lg border border-zinc-800">
+                        <span class="text-xs text-zinc-400 block mono">TOTAL PROYECTADO (Línea de Puntos)</span>
+                        <span id="resTotal" class="text-2xl font-bold text-white mono">--</span>
+                    </div>
+
+                    <div class="p-4 bg-zinc-950 rounded-lg border border-zinc-800">
+                        <span class="text-xs text-zinc-400 block mono">MARGEN PROYECTADO (Spread)</span>
+                        <span id="resMargen" class="text-xl font-semibold text-emerald-400 mono">--</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-3 bg-zinc-950 rounded-lg border border-zinc-800">
+                            <span class="text-[10px] text-zinc-400 block mono">EST. EQUIPO A</span>
+                            <span id="resPuntosA" class="text-lg font-bold text-blue-400 mono">--</span>
+                        </div>
+                        <div class="p-3 bg-zinc-950 rounded-lg border border-zinc-800">
+                            <span class="text-[10px] text-zinc-400 block mono">EST. EQUIPO B</span>
+                            <span id="resPuntosB" class="text-lg font-bold text-amber-400 mono">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t border-zinc-800/80 text-[11px] text-zinc-500 mono text-center">
+                PULSOFORT PROPRIETARY ENGINE &bull; RESTEFORT v2.0
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-zinc-800 py-4 text-center text-xs text-zinc-500 mono bg-zinc-950/40">
+        &copy; 2026 PulsoFort Predicciones. Todos los derechos reservados.
+    </footer>
+
+    <!-- FIREBASE SDKs & LOGICA MATEMÁTICA -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Credenciales oficiales de tu proyecto pulsofort-predicciones
+        const firebaseConfig = {
+          apiKey: "AIzaSyALv4wrcM0ARWNOttUy1GnRfGxY8hbFtaA",
+          authDomain: "pulsofort-predicciones.firebaseapp.com",
+          projectId: "pulsofort-predicciones",
+          storageBucket: "pulsofort-predicciones.firebasestorage.app",
+          messagingSenderId: "656523046473",
+          appId: "1:656523046473:web:71806358f53f4912495998",
+          measurementId: "G-KCZ9JJDLCL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.db = db;
+    </script>
+
+    <script>
+        function calcularRestefort() {
+            // Lectura de variables
+            const ppgA = parseFloat(document.getElementById('ppgA').value);
+            const paceA = parseFloat(document.getElementById('paceA').value);
+            const netRtgA = parseFloat(document.getElementById('netRtgA').value);
+            const efgA = parseFloat(document.getElementById('efgA').value);
+            const orebA = parseFloat(document.getElementById('orebA').value);
+            const tovA = parseFloat(document.getElementById('tovA').value);
+
+            const ppgB = parseFloat(document.getElementById('ppgB').value);
+            const paceB = parseFloat(document.getElementById('paceB').value);
+            const netRtgB = parseFloat(document.getElementById('netRtgB').value);
+            const efgB = parseFloat(document.getElementById('efgB').value);
+            const orebB = parseFloat(document.getElementById('orebB').value);
+            const tovB = parseFloat(document.getElementById('tovB').value);
+
+            const faa = parseFloat(document.getElementById('faa').value);
+
+            // 1. Normalización de Ritmo
+            const paceCombinado = (paceA + paceB) / 2;
+            const factorPace = paceCombinado / 100;
+            const puntajeBaseProyectado = (ppgA + ppgB) * factorPace;
+
+            // 2. Matriz de Diferenciales (AAT)
+            const deltaNetRtg = (netRtgA - netRtgB) * factorPace * 0.5;
+            const deltaEfg = (efgA - efgB) * 100 * 0.25;
+            const deltaPosesiones = ((orebA - orebB) * 0.35) + ((tovB - tovA) * 0.65);
+            const aat = deltaNetRtg + deltaEfg + deltaPosesiones + faa;
+
+            // 3. Ecuaciones de Salida
+            const totalProyectado = puntajeBaseProyectado + Math.abs(aat);
+            const margenProyectado = (ppgA - ppgB) + aat;
+            const puntosA = (totalProyectado / 2) + (margenProyectado / 2);
+            const puntosB = (totalProyectado / 2) - (margenProyectado / 2);
+
+            // Mostrar resultados en la UI
+            document.getElementById('resultsPlaceholder').classList.add('hidden');
+            document.getElementById('resultsContent').classList.remove('hidden');
+
+            document.getElementById('resTotal').innerText = totalProyectado.toFixed(2);
+            document.getElementById('resMargen').innerText = (margenProyectado > 0 ? "+" : "") + margenProyectado.toFixed(2);
+            document.getElementById('resPuntosA').innerText = puntosA.toFixed(1);
+            document.getElementById('resPuntosB').innerText = puntosB.toFixed(1);
+        }
+    </script>
+</body>
+</html>
