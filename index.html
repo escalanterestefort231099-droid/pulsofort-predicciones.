@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PulsoFort99 - Terminal Analítica NBA</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
 
-    <!-- Header / Navbar Público -->
+    <!-- Header / Navbar Público (Limpio, sin rastro de administración) -->
     <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
@@ -18,15 +19,12 @@
                 <span class="text-xs text-slate-400 flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> En Línea
                 </span>
-                <!-- Botón de Iniciar Sesión exclusivo para ti -->
-                <a href="admin.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2 px-3 rounded-lg border border-slate-700 transition">
-                    🔐 Iniciar Sesión
-                </a>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
         <!-- Cartelera Estilo The Score -->
         <section class="lg:col-span-2 space-y-4">
             <div class="flex justify-between items-center">
@@ -39,7 +37,7 @@
             </div>
 
             <div id="games-container" class="space-y-4">
-                <!-- Tarjeta de Partido -->
+                <!-- Tarjeta de Partido de Ejemplo -->
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
                     <div class="flex justify-between items-center mb-3 border-b border-slate-800/60 pb-2">
                         <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Próximo Encuentro</span>
@@ -76,6 +74,7 @@
                 </div>
             </div>
         </section>
+
     </main>
 
     <script>
@@ -93,5 +92,5 @@
                 </div>`;
         }
     </script>
-</body>
-</html>
+                                </body>
+                                
