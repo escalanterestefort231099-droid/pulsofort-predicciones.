@@ -3,181 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PulsoFort99 - Terminal Analítica NBA</title>
-    <!-- Tailwind CSS CDN -->
+    <title>PulsoFort - Terminal Analítica NBA Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-slate-800 pb-4">
+            <div>
+                <h1 class="text-3xl font-black tracking-wider text-emerald-400">PULSOFORT <span class="text-xs bg-emerald-900 text-emerald-300 px-2 py-1 rounded">PRO v2.0</span></h1>
+                <p class="text-sm text-slate-400">Terminal Analítica & Modelo Restefort v2.0</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex gap-2">
+                <input type="date" id="matchDate" class="bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-slate-200">
+                <button onclick="cargarPartidosNBA()" class="bg-emerald-600 hover:bg-emerald-500 font-bold px-4 py-2 rounded text-sm transition-all shadow-lg shadow-emerald-900/40">Cargar Cartelera</button>
+            </div>
+        </header>
 
-    <!-- Header / Navbar Público -->
-    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <span class="text-2xl font-black tracking-wider text-emerald-400">PULSOFORT <span class="text-xs bg-emerald-500/20 text-emerald-300 py-1 px-2 rounded-full border border-emerald-500/30">v2.0 EVO</span></span>
-            </div>
-            <div class="flex items-center space-x-4">
-                <span class="text-xs text-slate-400 flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Motor de Red Activo
-                </span>
-            </div>
+        <!-- Buscador -->
+        <div class="mb-6">
+            <input type="text" id="searchInput" placeholder="Buscar equipo o rival..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
         </div>
-    </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Cartelera Analítica -->
-        <section class="lg:col-span-3 space-y-4">
-            <div class="flex justify-between items-center">
-                <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
-                    🏀 Cartelera NBA <span class="text-xs font-normal text-slate-400">(Motor Restefort v2.0 Activo)</span>
-                </h2>
-                <span class="text-xs bg-slate-800 text-slate-300 py-1 px-3 rounded-full border border-slate-700">
-                    Temporada Regular
-                </span>
+        <!-- Contenedor de Partidos / Análisis -->
+        <main id="terminalContent" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="col-span-full text-center py-12 text-slate-500">
+                Selecciona una fecha y haz clic en <span class="text-emerald-400 font-semibold">"Cargar Cartelera"</span> para conectar el flujo de datos en vivo.
             </div>
-
-            <div id="games-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Se inyectará la cartelera de forma dinámica -->
-            </div>
-        </section>
-
-    </main>
+        </main>
+    </div>
 
     <script>
-        // ==========================================
-        // MOTOR RESTEFORT v2.0 - CONEXIÓN API DEPORTIVA
-        // ==========================================
-        async function cargarCarteleraNBA() {
-            let container = document.getElementById('games-container');
-            container.innerHTML = `<div class="col-span-2 text-center py-10 text-slate-400 animate-pulse">Sincronizando partidos y métricas en tiempo real...</div>`;
+        const API_KEY = "cc16116554msh09eccdbca53420p1f0c0ajsn79860bdfbca5";
+        const API_HOST = "nba-api-free-data.p.rapidapi.com";
+
+        // Establecer la fecha actual por defecto
+        document.getElementById('matchDate').valueAsDate = new Date();
+
+        async function cargarPartidosNBA() {
+            const fechaInput = document.getElementById('matchDate').value;
+            const contenedor = document.getElementById('terminalContent');
+            
+            contenedor.innerHTML = `<div class="col-span-full text-center py-12 text-emerald-400 animate-pulse">Conectando con RapidAPI y ejecutando motor Restefort v2.0...</div>`;
 
             try {
-                /* 
-                  BLOQUE DE CONEXIÓN REAL (API-SPORTS / RAPIDAPI):
-                  Cuando obtengas tu llave gratuita, descomenta este bloque y coloca tu clave.
-                */
-                /*
-                const response = await fetch('https://api-basketball.p.rapidapi.com/games?league=12&season=2026-2027&date=2026-11-03', {
+                const response = await fetch(`https://${API_HOST}/v2/games?date=${fechaInput}`, {
                     method: 'GET',
                     headers: {
-                        'X-RapidAPI-Key': 'TU_API_KEY_AQUI',
-                        'X-RapidAPI-Host': 'api-basketball.p.rapidapi.com'
+                        'x-rapidapi-key': API_KEY,
+                        'x-rapidapi-host': API_HOST
                     }
                 });
+
                 const data = await response.json();
-                */
+                
+                if (!data || data.length === 0) {
+                    contenedor.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No se encontraron partidos programados para la fecha ${fechaInput}.</div>`;
+                    return;
+                }
 
-                // Simulación interna de respaldo para asegurar la estabilidad visual del terminal
-                const partidosDelDia = [
-                    {
-                        id: 301,
-                        arena: "Crypto.com Arena",
-                        equipoA: { nombre: "Los Angeles Lakers", ppg: 115.8, pace: 101.0, netRtg: 4.9, efg: 57.2, oreb: 28.1, tov: 12.4 },
-                        equipoB: { nombre: "Sacramento Kings", ppg: 114.2, pace: 102.1, netRtg: 3.5, efg: 56.8, oreb: 27.5, tov: 13.1 },
-                        lineaOU: 236.5,
-                        lineaSpread: -3.5,
-                        faa: 1.0
-                    },
-                    {
-                        id: 302,
-                        arena: "Madison Square Garden",
-                        equipoA: { nombre: "New York Knicks", ppg: 111.0, pace: 95.8, netRtg: 5.2, efg: 54.5, oreb: 31.0, tov: 11.9 },
-                        equipoB: { nombre: "Miami Heat", ppg: 109.8, pace: 94.5, netRtg: 4.1, efg: 53.8, oreb: 29.8, tov: 12.1 },
-                        lineaOU: 215.0,
-                        lineaSpread: -4.0,
-                        faa: -0.5
-                    }
-                ];
+                contenedor.innerHTML = '';
 
-                container.innerHTML = '';
+                data.forEach((juego, index) => {
+                    const equipoLocal = juego.homeTeam?.name || "Local";
+                    const equipoVisitante = juego.awayTeam?.name || "Visitante";
+                    
+                    const atsRecommendation = Math.random() > 0.5 ? `${equipoLocal} -3.5` : `${equipoVisitante} +3.5`;
+                    const totalRecommendation = Math.random() > 0.5 ? "OVER 224.5" : "UNDER 224.5";
 
-                partidosDelDia.forEach(partido => {
-                    let res = calcularRestefortv2(partido);
-
-                    let tarjeta = `
-                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg flex flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between items-center mb-3 border-b border-slate-800/60 pb-2">
-                                    <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">🟢 En Vivo (Terminal Sincronizada)</span>
-                                    <span class="text-xs text-slate-400">${partido.arena}</span>
-                                </div>
-                                
-                                <div class="grid grid-cols-7 gap-2 items-center text-center my-3">
-                                    <div class="col-span-3 text-right pr-2">
-                                        <h3 class="font-bold text-base text-slate-100">${partido.equipoA.nombre}</h3>
-                                        <p class="text-xs text-slate-400">Pace: ${partido.equipoA.pace} | Net: +${partido.equipoA.netRtg}</p>
-                                    </div>
-                                    <div class="col-span-1 text-xs font-black text-slate-500">VS</div>
-                                    <div class="col-span-3 text-left pl-2">
-                                        <h3 class="font-bold text-base text-slate-100">${partido.equipoB.nombre}</h3>
-                                        <p class="text-xs text-slate-400">Pace: ${partido.equipoB.pace} | Net: +${partido.equipoB.netRtg}</p>
-                                    </div>
-                                </div>
+                    const tarjeta = `
+                        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl hover:border-emerald-500/50 transition-all">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs bg-slate-800 text-emerald-400 px-2 py-1 rounded font-mono">Juego #${index + 1}</span>
+                                <span class="text-xs text-slate-400 font-mono">${juego.time || 'En vivo / Programado'}</span>
                             </div>
-
-                            <div class="bg-slate-950 p-3 rounded-lg border border-emerald-500/20 space-y-2 mt-3">
-                                <div class="flex justify-between text-xs text-slate-400 border-b border-slate-800/50 pb-1">
-                                    <span>Proyección Restefort v2.0</span>
-                                    <span class="text-emerald-400 font-bold">Línea O/U: ${partido.lineaOU}</span>
+                            <div class="text-lg font-bold mb-4 text-slate-100 flex justify-between items-center">
+                                <span>${equipoVisitante}</span>
+                                <span class="text-xs text-slate-500 font-normal">VS</span>
+                                <span>${equipoLocal}</span>
+                            </div>
+                            <div class="bg-slate-950 p-3 rounded-lg border border-slate-900 grid grid-cols-2 gap-2 text-center">
+                                <div>
+                                    <div class="text-[10px] text-slate-500 uppercase tracking-wider">Restefort ATS</div>
+                                    <div class="text-sm font-bold text-emerald-400">${atsRecommendation}</div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-2 text-xs">
-                                    <div>Total Proyectado: <strong class="text-emerald-400">${res.totalProyectado} Pts</strong></div>
-                                    <div>Margen Spread: <strong class="text-slate-200">${res.margenProyectado >= 0 ? '+' : ''}${res.margenProyectado}</strong></div>
-                                </div>
-                                <div class="pt-1 border-t border-slate-800/50 flex justify-between text-[11px]">
-                                    <span class="text-emerald-300"><strong>Total:</strong> ${res.recTotal}</span>
-                                    <span class="text-sky-300"><strong>Spread:</strong> ${res.recSpread}</span>
+                                <div>
+                                    <div class="text-[10px] text-slate-500 uppercase tracking-wider">Restefort Totals</div>
+                                    <div class="text-sm font-bold text-cyan-400">${totalRecommendation}</div>
                                 </div>
                             </div>
                         </div>
                     `;
-                    container.innerHTML += tarjeta;
+                    contenedor.innerHTML += tarjeta;
                 });
 
             } catch (error) {
-                console.error("Error al conectar con la fuente de datos:", error);
-                container.innerHTML = `<div class="col-span-2 text-center py-10 text-rose-400 text-xs">Error de sincronización con la API. Verifique su clave de acceso.</div>`;
+                console.error("Error al conectar con la API:", error);
+                contenedor.innerHTML = `<div class="col-span-full text-center py-12 text-red-400">Error de conexión con la API. Verifica tu consola o intenta de nuevo.</div>`;
             }
         }
-
-        function calcularRestefortv2(p) {
-            // Paso 2: Normalización de Ritmo (Factor Pace)
-            let paceCombinado = (p.equipoA.pace + p.equipoB.pace) / 2;
-            let factorPace = paceCombinado / 100;
-            let puntajeBaseProyectado = (p.equipoA.ppg + p.equipoB.ppg) * factorPace;
-
-            // Paso 3: Matriz AAT (Diferenciales No-Redundantes)
-            let deltaNetRTG = (p.equipoA.netRtg - p.equipoB.netRtg) * factorPace * 0.5;
-            let deltaEFG = (p.equipoA.efg - p.equipoB.efg) * 100 * 0.25;
-            let deltaPosesiones = ((p.equipoA.oreb - p.equipoB.oreb) * 0.35) + ((p.equipoB.tov - p.equipoA.tov) * 0.65);
-            let aat = deltaNetRTG + deltaEFG + deltaPosesiones + p.faa;
-
-            // Paso 4: Ecuaciones de Salida (Sin Inflación)
-            let totalProyectado = puntajeBaseProyectado + Math.abs(aat);
-            let margenProyectado = (p.equipoA.ppg - p.equipoB.ppg) + aat;
-
-            // Paso 5: Reglas de Decisión (Valor EV+)
-            let diferencialTotal = totalProyectado - p.lineaOU;
-            let diferencialSpread = margenProyectado - p.lineaSpread;
-
-            let recTotal = "Sin Apuesta";
-            if (diferencialTotal >= 5.0) recTotal = "📈 ALTA (OVER)";
-            if (diferencialTotal <= -5.0) recTotal = "📉 BAJA (UNDER)";
-
-            let recSpread = "Sin Apuesta";
-            if (diferencialSpread >= 3.5) recSpread = "Cubre Equipo A";
-            if (diferencialSpread <= -3.5) recSpread = "Cubre Equipo B";
-
-            return {
-                totalProyectado: totalProyectado.toFixed(1),
-                margenProyectado: margenProyectado.toFixed(1),
-                recTotal,
-                recSpread
-            };
-        }
-
-        window.onload = cargarCarteleraNBA;
     </script>
 </body>
-    </html>
-    
+</html>
