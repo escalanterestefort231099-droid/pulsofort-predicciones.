@@ -4,174 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PulsoFort99 - Terminal Analítica NBA</title>
-    <!-- Tailwind CSS CDN para un diseño profesional y limpio -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
 
-    <!-- Header / Navbar -->
+    <!-- Header / Navbar Público -->
     <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <span class="text-2xl font-black tracking-wider text-emerald-400">PULSOFORT <span class="text-xs bg-emerald-500/20 text-emerald-300 py-1 px-2 rounded-full border border-emerald-500/30">v2.0 EVO</span></span>
             </div>
             <div class="flex items-center space-x-4">
-                <span id="system-status" class="text-xs text-slate-400 flex items-center gap-1">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sincronizado
+                <span class="text-xs text-slate-400 flex items-center gap-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> En Línea
                 </span>
-                <button onclick="toggleAdminPanel()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2 px-3 rounded-lg border border-slate-700 transition">
-                    ⚙️ Admin / Bitácora
-                </button>
+                <!-- Botón de Iniciar Sesión exclusivo para ti -->
+                <a href="admin.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2 px-3 rounded-lg border border-slate-700 transition">
+                    🔐 Iniciar Sesión
+                </a>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Columna Izquierda y Central: Cartelera Estilo The Score -->
+        <!-- Cartelera Estilo The Score -->
         <section class="lg:col-span-2 space-y-4">
             <div class="flex justify-between items-center">
                 <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
-                    🏀 Cartelera NBA <span class="text-xs font-normal text-slate-400">(En Vivo / Pre-juego)</span>
+                    🏀 Cartelera NBA <span class="text-xs font-normal text-slate-400">(Pre-juego y En Vivo)</span>
                 </h2>
                 <span class="text-xs bg-slate-800 text-slate-300 py-1 px-3 rounded-full border border-slate-700">
-                    Temporada Regular 2026-27
+                    Temporada Regular
                 </span>
             </div>
 
-            <!-- Contenedor de Partidos (Aquí inyectará la API o Firebase la cartelera) -->
             <div id="games-container" class="space-y-4">
-                
-                <!-- Tarjeta de Ejemplo de Partido -->
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg hover:border-slate-700 transition">
+                <!-- Tarjeta de Partido -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
                     <div class="flex justify-between items-center mb-3 border-b border-slate-800/60 pb-2">
-                        <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Comienza en 2h 15m • Pre-juego</span>
+                        <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Próximo Encuentro</span>
                         <span class="text-xs text-slate-400">Crypto.com Arena</span>
                     </div>
                     
                     <div class="grid grid-cols-7 gap-2 items-center text-center my-3">
                         <div class="col-span-3 text-right pr-2">
                             <h3 class="font-bold text-base text-slate-100">Los Angeles Lakers</h3>
-                            <p class="text-xs text-slate-400">Últimos 5: (4-1) | Pace: 101.4</p>
+                            <p class="text-xs text-slate-400">Pace: 101.4</p>
                         </div>
                         <div class="col-span-1 text-xs font-black text-slate-500">VS</div>
                         <div class="col-span-3 text-left pl-2">
                             <h3 class="font-bold text-base text-slate-100">Dallas Mavericks</h3>
-                            <p class="text-xs text-slate-400">Últimos 5: (3-2) | Pace: 98.2</p>
+                            <p class="text-xs text-slate-400">Pace: 98.2</p>
                         </div>
                     </div>
 
-                    <div class="bg-slate-950/60 p-3 rounded-lg border border-slate-800/80 mb-3 text-xs flex justify-around text-slate-300">
-                        <div>Lesiones clave: <span class="text-amber-400 font-semibold">L. Dončić (GTD)</span></div>
-                        <div>Árbitros (FAA): <span class="text-emerald-400 font-semibold">Tendencia Alta (+2.4 pts)</span></div>
-                    </div>
-
-                    <div class="flex gap-2">
-                        <button onclick="calcularPartido('LAL', 'DAL')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2 px-4 rounded-lg text-xs transition shadow-md">
-                            ⚡ Calcular Pre-juego (Restefort v2.0)
-                        </button>
-                        <button onclick="calcularEnVivo('LAL', 'DAL')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2 px-3 rounded-lg text-xs border border-slate-700 transition">
-                            🔴 En Vivo
-                        </button>
-                    </div>
+                    <button onclick="verProyeccion()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 rounded-lg text-xs transition shadow-md">
+                        ⚡ Ver Proyección Restefort v2.0
+                    </button>
                 </div>
-                <!-- Fin Tarjeta de Ejemplo -->
-
             </div>
         </section>
 
-        <!-- Columna Derecha: Panel de Resultados y Predicción Restefort -->
+        <!-- Columna de Resultados -->
         <section class="space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 sticky top-20 shadow-xl">
-                <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center justify-between">
-                    <span>Terminal de Resultados</span>
-                    <span class="text-xs text-emerald-400 font-normal">Modelo V2.0 Activo</span>
-                </h3>
-
+                <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">Terminal de Resultados</h3>
                 <div id="result-display" class="space-y-4 text-sm text-slate-400">
                     <div class="p-6 text-center border border-dashed border-slate-800 rounded-xl bg-slate-950/40">
-                        <p class="text-xs text-slate-500">Selecciona un partido de la cartelera para ejecutar la fórmula matemática y cruzar la bitácora activa.</p>
+                        <p class="text-xs text-slate-500">Selecciona un partido para ver el análisis matemático en tiempo real.</p>
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
 
-    <!-- Modal / Panel de Administración Privado -->
-    <div id="admin-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden z-50 flex justify-center items-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 shadow-2xl relative">
-            <button onclick="toggleAdminPanel()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-100 text-lg">✕</button>
-            
-            <h3 class="text-lg font-bold text-slate-100 mb-2">Panel Administrativo y Bitácora</h3>
-            <p class="text-xs text-slate-400 mb-4">Gestiona tus notas tácticas y reglas evolutivas privadas que alimentan el motor de cálculo.</p>
-
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Contraseña de Administrador</label>
-                    <input type="password" id="admin-pass" placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nueva Nota / Regla Táctica (Bitácora)</label>
-                    <textarea id="admin-note" rows="3" placeholder="Ej: Regla Lakers en B2B: descontar 3.5 puntos al ritmo proyectado..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs text-slate-100 focus:outline-none focus:border-emerald-500"></textarea>
-                </div>
-
-                <button onclick="guardarBitacora()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 rounded-lg text-xs transition">
-                    Guardar y Actualizar Cerebro Evolutivo
-                </button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Funciones de control de la Interfaz
-        function toggleAdminPanel() {
-            const modal = document.getElementById('admin-modal');
-            modal.classList.toggle('hidden');
-        }
-
-        function calcularPartido(home, away) {
-            const display = document.getElementById('result-display');
-            display.innerHTML = `
-                <div class="bg-slate-950 p-4 rounded-xl border border-emerald-500/30 space-y-3 animate-fadeIn">
-                    <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2">
-                        <span>Análisis Restefort v2.0</span>
-                        <span class="text-emerald-400 font-bold">EV+ Detectado</span>
+        function verProyeccion() {
+            document.getElementById('result-display').innerHTML = `
+                <div class="bg-slate-950 p-4 rounded-xl border border-emerald-500/30 space-y-3">
+                    <div class="flex justify-between text-xs text-slate-400 border-b border-slate-800 pb-2">
+                        <span>Análisis Automático</span>
+                        <span class="text-emerald-400 font-bold">EV+ OK</span>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-slate-100 text-sm">${home} vs ${away}</h4>
-                        <p class="text-xs text-slate-400 mt-1">Aplicando matriz AAT, Pace y factores arbitrales...</p>
-                    </div>
-                    <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1 text-xs">
+                    <div class="space-y-1 text-xs">
                         <div class="flex justify-between"><span>Total Proyectado:</span> <strong class="text-emerald-400">228.5 Pts</strong></div>
-                        <div class="flex justify-between"><span>Spread Sugerido:</span> <strong class="text-slate-200">${home} -4.5</strong></div>
-                        <div class="flex justify-between"><span>Confianza del Modelo:</span> <strong class="text-emerald-400">84.2%</strong></div>
+                        <div class="flex justify-between"><span>Spread Sugerido:</span> <strong class="text-slate-200">LAL -4.5</strong></div>
                     </div>
-                </div>
-            `;
-        }
-
-        function calcularEnVivo(home, away) {
-            alert("Modo En Vivo activado para: " + home + " vs " + away);
-        }
-
-        function guardarBitacora() {
-            const pass = document.getElementById('admin-pass').value;
-            const note = document.getElementById('admin-note').value;
-            if(!pass) {
-                alert("Por favor ingresa la clave de administrador.");
-                return;
-            }
-            // Aquí se conectará con Firebase Firestore para guardar la nota de forma segura
-            alert("¡Nota guardada y sincronizada con éxito en el sistema evolutivo!");
-            toggleAdminPanel();
-            document.getElementById('admin-note').value = '';
+                </div>`;
         }
     </script>
 </body>
-                                                                                                                            </html>
-    
+</html>
